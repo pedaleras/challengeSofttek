@@ -33,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         composable(route = "login") { LoginScreen(navController) }
                         composable(route = "menu") { MenuScreen(navController) }
-                        composable(route = "avaliacaoRiscos") { AvaliacaoRiscosScreen() }
+                        composable(route = "avaliacaoRiscos") { AvaliacaoRiscosScreen(navController) }
                         composable(route = "resultadoRiscos") { ResultadoRiscosScreen() }
                     }
                 }
