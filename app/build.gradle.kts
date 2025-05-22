@@ -58,4 +58,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation("androidx.navigation:navigation-compose:2.9.0")
+    implementation("com.patrykandpatrick.vico:compose:1.13.0") // ou versão mais recente
+    implementation("com.patrykandpatrick.vico:core:1.13.0")
+
 }

@@ -12,9 +12,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.challengesofttek.screens.AvaliacaoRiscosScreen
+import br.com.fiap.challengesofttek.screens.HumorScreen
 import br.com.fiap.challengesofttek.screens.LoginScreen
 import br.com.fiap.challengesofttek.screens.MenuScreen
-import br.com.fiap.challengesofttek.screens.ResultadoRiscosScreen
+import br.com.fiap.challengesofttek.screens.RecursosApoioScreen
+import br.com.fiap.challengesofttek.screens.VisualizacaoDadosScreen
 import br.com.fiap.challengesofttek.ui.theme.ChallengeSofttekTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,7 +36,9 @@ class MainActivity : ComponentActivity() {
                         composable(route = "login") { LoginScreen(navController) }
                         composable(route = "menu") { MenuScreen(navController) }
                         composable(route = "avaliacaoRiscos") { AvaliacaoRiscosScreen(navController) }
-                        composable(route = "resultadoRiscos") { ResultadoRiscosScreen() }
+                        composable(route = "acompanhamentoEmocional") { HumorScreen(navController) }
+                        composable(route = "recursosApoio") { RecursosApoioScreen(navController) }
+                        composable(route = "visualizacaoDados") { VisualizacaoDadosScreen(navController) }
                     }
                 }
             }
