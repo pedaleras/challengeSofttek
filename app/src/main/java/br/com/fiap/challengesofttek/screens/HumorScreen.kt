@@ -41,9 +41,9 @@ class HumorViewModel : ViewModel() {
 
 // Converte nível numérico de humor em descrição verbal
 fun getHumorDescription(value: Int): String = when (value) {
-    1 -> "Mau"
-    2 -> "Ruim"
-    3 -> "Regular"
+    1 -> "Muito Mau"
+    2 -> "Mau"
+    3 -> "Normal"
     4 -> "Bem"
     5 -> "Muito bem"
     else -> ""
