@@ -34,21 +34,43 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.challengesofttek.components.PerguntaItem
+import br.com.fiap.challengesofttek.dto.AvaliacaoRiscosResponseDTO
 import br.com.fiap.challengesofttek.model.OpcaoResposta
 import br.com.fiap.challengesofttek.model.PerguntaAvaliacao
+import br.com.fiap.challengesofttek.repository.AvaliacaoRiscosRepository
 import br.com.fiap.challengesofttek.repository.QuestionRepository
 import br.com.fiap.challengesofttek.repository.QuestionRepositoryImpl
 import br.com.fiap.challengesofttek.util.calcularCategoriaFinal
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 
 
 class AvaliacaoViewModel(
-    repository: QuestionRepository = QuestionRepositoryImpl
+    questionRepository: QuestionRepository = QuestionRepositoryImpl
 ) : ViewModel() {
-    val perguntas: List<PerguntaAvaliacao> = repository.getPerguntasAvaliacao()
+    private val repository = AvaliacaoRiscosRepository()
+
+    private val _resposta = MutableStateFlow<AvaliacaoRiscosResponseDTO?>(null)
+    val resposta: StateFlow<AvaliacaoRiscosResponseDTO?> = _resposta
+
+    fun enviarAvaliacao(mediaPercentual: Double) {
+        viewModelScope.launch {
+            try {
+                val respostaApi = repository.enviar(mediaPercentual)
+                _resposta.value = respostaApi
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    val perguntas: List<PerguntaAvaliacao> = questionRepository.getPerguntasAvaliacao()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -77,7 +99,11 @@ fun AvaliacaoRiscosScreen(
                             navController.popBackStack()
                         }
                     }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar", tint = Color.White)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Voltar",
+                            tint = Color.White
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF329F6B))
@@ -109,8 +135,10 @@ fun AvaliacaoRiscosScreen(
                 }
                 if (mostrarErro) {
                     Text(
-                        text = "Responda todas as perguntas", color = MaterialTheme.colorScheme.error,
-                        modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center
+                        text = "Responda todas as perguntas",
+                        color = MaterialTheme.colorScheme.error,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
                     )
                 }
                 Button(
@@ -119,17 +147,25 @@ fun AvaliacaoRiscosScreen(
                             val soma = respostasSelecionadas.values.sumOf { it.percentualMedio }
                             mediaPercentuaisFinal = soma.toDouble() / perguntas.size
                             resultadoFinal = calcularCategoriaFinal(mediaPercentuaisFinal!!)
-                            // TODO: salvar no DB e sincronizar API
+
+                            viewModel.enviarAvaliacao(mediaPercentuaisFinal!!)
                         } else mostrarErro = true
                     },
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF329F6B))
                 ) {
                     Text("Enviar")
                 }
             } else {
                 Text(
-                    text = "Resultado: $resultadoFinal (${String.format("%.1f%%", mediaPercentuaisFinal)})",
+                    text = "Resultado: $resultadoFinal (${
+                        String.format(
+                            "%.1f%%",
+                            mediaPercentuaisFinal
+                        )
+                    })",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.fillMaxWidth(),
@@ -138,10 +174,10 @@ fun AvaliacaoRiscosScreen(
                 Spacer(Modifier.height(8.dp))
                 Text(
                     text = when (resultadoFinal) {
-                        "Neutro"    -> "Sua condição está dentro do esperado."
-                        "Leve"      -> "Alguns episódios podem afetar sem prejudicar atividades."
-                        "Moderado"  -> "Sentimentos persistentes que afetam bem-estar."
-                        else         -> "Sentimento intenso que pode impactar qualidade de vida."
+                        "Neutro" -> "Sua condição está dentro do esperado."
+                        "Leve" -> "Alguns episódios podem afetar sem prejudicar atividades."
+                        "Moderado" -> "Sentimentos persistentes que afetam bem-estar."
+                        else -> "Sentimento intenso que pode impactar qualidade de vida."
                     },
                     textAlign = TextAlign.Center
                 )
@@ -151,7 +187,9 @@ fun AvaliacaoRiscosScreen(
                         resultadoFinal = null
                         respostasSelecionadas.clear()
                     },
-                    modifier = Modifier.fillMaxWidth().height(48.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF329F6B))
                 ) {
                     Text("Refazer Avaliação")
@@ -160,7 +198,6 @@ fun AvaliacaoRiscosScreen(
         }
     }
 }
-
 
 
 @Preview(showBackground = true)
