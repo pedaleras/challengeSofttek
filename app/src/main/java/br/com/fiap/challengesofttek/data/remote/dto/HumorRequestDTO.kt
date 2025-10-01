@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.dto
+package br.com.fiap.challengesofttek.data.remote.dto
 
 import com.squareup.moshi.JsonClass
 

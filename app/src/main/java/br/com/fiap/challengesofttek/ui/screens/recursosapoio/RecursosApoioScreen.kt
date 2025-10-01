@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.screens
+package br.com.fiap.challengesofttek.ui.screens.recursosapoio
 
 import android.content.Intent
 import android.net.Uri

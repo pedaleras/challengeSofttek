@@ -1,7 +1,7 @@
-package br.com.fiap.challengesofttek.repository
+package br.com.fiap.challengesofttek.data.repository
 
-import br.com.fiap.challengesofttek.model.OpcaoResposta
-import br.com.fiap.challengesofttek.model.PerguntaAvaliacao
+import br.com.fiap.challengesofttek.domain.model.OpcaoResposta
+import br.com.fiap.challengesofttek.domain.model.PerguntaAvaliacao
 
 // domain/data/QuestionRepository.kt
 interface QuestionRepository {

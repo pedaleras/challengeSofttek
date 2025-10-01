@@ -11,12 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.challengesofttek.screens.AvaliacaoRiscosScreen
-import br.com.fiap.challengesofttek.screens.HumorScreen
-import br.com.fiap.challengesofttek.screens.LoginScreen
-import br.com.fiap.challengesofttek.screens.MenuScreen
-import br.com.fiap.challengesofttek.screens.RecursosApoioScreen
-import br.com.fiap.challengesofttek.screens.VisualizacaoDadosScreen
+import br.com.fiap.challengesofttek.ui.screens.avaliacaoriscos.AvaliacaoRiscosScreen
+import br.com.fiap.challengesofttek.ui.screens.humor.HumorScreen
+import br.com.fiap.challengesofttek.ui.screens.login.LoginScreen
+import br.com.fiap.challengesofttek.ui.screens.menu.MenuScreen
+import br.com.fiap.challengesofttek.ui.screens.recursosapoio.RecursosApoioScreen
+import br.com.fiap.challengesofttek.ui.screens.visualizacaodados.VisualizacaoDadosScreen
 import br.com.fiap.challengesofttek.ui.theme.ChallengeSofttekTheme
 
 class MainActivity : ComponentActivity() {

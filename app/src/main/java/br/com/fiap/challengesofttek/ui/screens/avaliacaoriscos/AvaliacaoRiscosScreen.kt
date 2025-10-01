@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.screens
+package br.com.fiap.challengesofttek.ui.screens.avaliacaoriscos
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,45 +33,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import br.com.fiap.challengesofttek.components.PerguntaItem
-import br.com.fiap.challengesofttek.dto.AvaliacaoRiscosResponseDTO
-import br.com.fiap.challengesofttek.model.OpcaoResposta
-import br.com.fiap.challengesofttek.model.PerguntaAvaliacao
-import br.com.fiap.challengesofttek.repository.AvaliacaoRiscosRepository
-import br.com.fiap.challengesofttek.repository.QuestionRepository
-import br.com.fiap.challengesofttek.repository.QuestionRepositoryImpl
+import br.com.fiap.challengesofttek.domain.model.OpcaoResposta
 import br.com.fiap.challengesofttek.util.calcularCategoriaFinal
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
-
-class AvaliacaoViewModel(
-    questionRepository: QuestionRepository = QuestionRepositoryImpl
-) : ViewModel() {
-    private val repository = AvaliacaoRiscosRepository()
-
-    private val _resposta = MutableStateFlow<AvaliacaoRiscosResponseDTO?>(null)
-    val resposta: StateFlow<AvaliacaoRiscosResponseDTO?> = _resposta
-
-    fun enviarAvaliacao(mediaPercentual: Double) {
-        viewModelScope.launch {
-            try {
-                val respostaApi = repository.enviar(mediaPercentual)
-                _resposta.value = respostaApi
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-    }
-
-    val perguntas: List<PerguntaAvaliacao> = questionRepository.getPerguntasAvaliacao()
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

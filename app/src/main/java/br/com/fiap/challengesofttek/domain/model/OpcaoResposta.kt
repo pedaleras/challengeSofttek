@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.model
+package br.com.fiap.challengesofttek.domain.model
 
 // Estruturas de dados para perguntas e opções
 data class OpcaoResposta(

@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.screens
+package br.com.fiap.challengesofttek.ui.screens.visualizacaodados
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

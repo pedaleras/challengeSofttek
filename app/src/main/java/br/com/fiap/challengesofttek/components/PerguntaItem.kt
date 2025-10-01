@@ -17,8 +17,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import br.com.fiap.challengesofttek.model.OpcaoResposta
-import br.com.fiap.challengesofttek.model.PerguntaAvaliacao
+import br.com.fiap.challengesofttek.domain.model.OpcaoResposta
+import br.com.fiap.challengesofttek.domain.model.PerguntaAvaliacao
 
 @Composable
 fun PerguntaItem(

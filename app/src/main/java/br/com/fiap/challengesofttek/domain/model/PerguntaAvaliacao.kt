@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.model
+package br.com.fiap.challengesofttek.domain.model
 
 data class PerguntaAvaliacao(
     val id: Int,

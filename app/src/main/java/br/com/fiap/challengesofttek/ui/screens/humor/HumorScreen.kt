@@ -1,13 +1,34 @@
-package br.com.fiap.challengesofttek.screens
+package br.com.fiap.challengesofttek.ui.screens.humor
 
-import android.util.Log
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,19 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import br.com.fiap.challengesofttek.dto.HumorRequestDTO
-import br.com.fiap.challengesofttek.dto.HumorResponseDTO
-import br.com.fiap.challengesofttek.repository.HumorRepository
-import br.com.fiap.challengesofttek.service.RetrofitClient
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
+import br.com.fiap.challengesofttek.data.repository.HumorRepository
+import br.com.fiap.challengesofttek.data.remote.service.RetrofitClient
 
 // Model de entrada de humor
 data class HumorEntry(
@@ -37,40 +50,6 @@ data class HumorEntry(
     val humorValue: Int,
     val comment: String?
 )
-
-// ViewModel para gerenciar entradas de humor
-class HumorViewModel(
-    private val repository: HumorRepository
-) : ViewModel() {
-    private val _entries = mutableStateListOf<HumorEntry>()
-    val entries: List<HumorEntry> get() = _entries
-
-    fun addEntry(value: Int, comment: String?) {
-        val now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
-        _entries.add(0, HumorEntry(timestamp = now, humorValue = value, comment = comment))
-    }
-
-    private val _resposta = MutableStateFlow<HumorResponseDTO?>(null)
-    val resposta: StateFlow<HumorResponseDTO?> = _resposta
-
-    fun enviarHumor(nivel: Int) {
-        viewModelScope.launch {
-            try {
-                Log.d("HUMOR", "Enviando humor com nível: $nivel")
-                val respostaApi = repository.enviarHumor(HumorRequestDTO(nivel))
-                _resposta.value = respostaApi
-            } catch (e: Exception) {
-                Log.e("HUMOR", "Erro ao enviar humor", e)
-                _resposta.value = null
-            }
-        }
-    }
-
-    fun limparResposta() {
-        _resposta.value = null
-    }
-
-}
 
 // Converte nível numérico de humor em descrição verbal
 fun getHumorDescription(value: Int): String = when (value) {

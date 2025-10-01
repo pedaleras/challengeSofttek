@@ -1,4 +1,4 @@
-package br.com.fiap.challengesofttek.screens
+package br.com.fiap.challengesofttek.ui.screens.menu
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
