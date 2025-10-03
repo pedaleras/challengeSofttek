@@ -14,11 +14,12 @@ class LoginViewModel(
     private val userPreferences: UserPreferences
 ) : ViewModel() {
 
-    private val _loginState = MutableStateFlow<LoginState>(LoginState.Carregando)
+    private val _loginState = MutableStateFlow<LoginState>(LoginState.Idle)
     val loginState: StateFlow<LoginState> = _loginState
 
     fun obterToken() {
         viewModelScope.launch {
+            _loginState.value = LoginState.Carregando
             try {
                 val usuario = repository.obterToken()
                 Log.d("LOGIN", "Usuário ID: ${usuario.anonymousUserId}, Token: ${usuario.token}")
@@ -36,6 +37,7 @@ class LoginViewModel(
 }
 
 sealed class LoginState {
+    object Idle : LoginState()
     object Carregando : LoginState()
     data class Sucesso(val userId: String, val token: String) : LoginState()
     data class Erro(val mensagem: String) : LoginState()

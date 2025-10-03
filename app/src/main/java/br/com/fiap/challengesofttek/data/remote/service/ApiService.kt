@@ -6,12 +6,16 @@ import br.com.fiap.challengesofttek.data.remote.dto.HumorRequestDTO
 import br.com.fiap.challengesofttek.data.remote.dto.HumorResponseDTO
 import br.com.fiap.challengesofttek.data.remote.dto.UsuarioAnonimoResponseDTO
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
 
     @POST("avaliacoes-riscos")
     suspend fun enviarAvaliacao(@Body dto: AvaliacaoRiscosRequestDTO): AvaliacaoRiscosResponseDTO
+
+    @GET("humores")
+    suspend fun obterListaHumor(): List<HumorResponseDTO>
 
     @POST("humores")
     suspend fun enviarHumor(@Body humor: HumorRequestDTO): HumorResponseDTO

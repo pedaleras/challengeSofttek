@@ -1,19 +1,11 @@
 package br.com.fiap.challengesofttek.ui.screens.login
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,24 +18,33 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import br.com.fiap.challengesofttek.data.local.UserPreferences
 import br.com.fiap.challengesofttek.data.repository.LoginRepository
 import br.com.fiap.challengesofttek.data.remote.service.RetrofitClient
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = viewModel(factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            val repository = LoginRepository(RetrofitClient.api)
-            return LoginViewModel(repository) as T
-        }
-    })
+    viewModel: LoginViewModel = run {
+        val context = LocalContext.current.applicationContext
+        viewModel(factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val repository = LoginRepository(RetrofitClient.api)
+                val userPreferences = UserPreferences(context)
+                return LoginViewModel(repository, userPreferences) as T
+            }
+        })
+    }
 ) {
-    val loginState = viewModel.loginState.collectAsState()
+    val loginState by viewModel.loginState.collectAsState()
 
-    LaunchedEffect(loginState.value) {
-        if (loginState.value is LoginState.Sucesso) {
-            navController.navigate("menu")
+    // Navega quando der sucesso
+    LaunchedEffect(loginState) {
+        if (loginState is LoginState.Sucesso) {
+            navController.navigate("menu") {
+                popUpTo("login") { inclusive = true } // remove login da pilha
+            }
         }
     }
 
@@ -54,7 +55,10 @@ fun LoginScreen(
             .padding(32.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.fillMaxWidth()
+        ) {
             Text(
                 text = "Bem-vindo",
                 fontSize = 28.sp,
@@ -62,26 +66,56 @@ fun LoginScreen(
                 color = Color.White
             )
 
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
+            // Botão com loading integrado
             Button(
                 onClick = { viewModel.obterToken() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color.White,
                     contentColor = Color(0xFFED145B)
                 ),
+                enabled = loginState !is LoginState.Carregando, // desativa quando carregando
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text(text = "Entrar", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                if (loginState is LoginState.Carregando) {
+                    CircularProgressIndicator(
+                        color = Color(0xFFED145B),
+                        strokeWidth = 2.dp,
+                        modifier = Modifier
+                            .padding(4.dp)
+                            .size(20.dp) // tamanho fixo pequeno
+                    )
+                } else {
+                    Text(
+                        text = "Entrar",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mensagem de erro
+            if (loginState is LoginState.Erro) {
+                val mensagem = (loginState as LoginState.Erro).mensagem
+                Text(
+                    text = "Erro: $mensagem",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
         }
     }
 }
 
-
 @Preview
 @Composable
 private fun LoginScreenPreview() {
-    LoginScreen(navController = NavController(LocalContext.current))
+    val navController = rememberNavController()
+    LoginScreen(navController = navController)
 }

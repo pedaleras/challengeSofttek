@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import br.com.fiap.challengesofttek.data.remote.service.RetrofitClient
 import br.com.fiap.challengesofttek.ui.screens.avaliacaoriscos.AvaliacaoRiscosScreen
 import br.com.fiap.challengesofttek.ui.screens.humor.HumorScreen
 import br.com.fiap.challengesofttek.ui.screens.login.LoginScreen
@@ -22,6 +23,8 @@ import br.com.fiap.challengesofttek.ui.theme.ChallengeSofttekTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        RetrofitClient.init(this)
+
         setContent {
             ChallengeSofttekTheme {
                 Surface(

@@ -9,4 +9,8 @@ class HumorRepository(private val api: ApiService) {
     suspend fun enviarHumor(humor: HumorRequestDTO): HumorResponseDTO {
         return api.enviarHumor(humor)
     }
+
+    suspend fun obterListaHumor(): List<HumorResponseDTO>{
+        return api.obterListaHumor()
+    }
 }

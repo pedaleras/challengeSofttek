@@ -5,7 +5,7 @@ import java.time.LocalDateTime
 
 @JsonClass(generateAdapter = true)
 data class HumorResponseDTO(
-    val id: Long,
+    val id: String,
     val nivel: Int,
     val descricao: String,
     val dataRegistro: String
