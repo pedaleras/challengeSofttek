@@ -13,4 +13,8 @@ class HumorRepository(private val api: ApiService) {
     suspend fun obterListaHumor(): List<HumorResponseDTO>{
         return api.obterListaHumor()
     }
+
+    suspend fun obterHumoresPorUsuario(userId: String): List<HumorResponseDTO> {
+        return api.obterHumoresPorUsuario(userId)
+    }
 }

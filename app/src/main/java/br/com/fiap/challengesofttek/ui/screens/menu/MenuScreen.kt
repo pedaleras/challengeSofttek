@@ -1,5 +1,7 @@
 package br.com.fiap.challengesofttek.ui.screens.menu
 
+import android.app.Activity
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
@@ -9,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -19,6 +22,8 @@ import androidx.navigation.compose.rememberNavController // Necessário para o P
 
 @Composable
 fun MenuScreen(navController: NavController) { // Adicionado NavController
+    val activity = LocalActivity.current
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -69,17 +74,12 @@ fun MenuScreen(navController: NavController) { // Adicionado NavController
             AppMenuButton(
                 text = "Sair",
                 onClick = {
-                    // Lógica para sair do app
-                    // Em um app real, você pode chamar activity.finish() se estiver em uma Activity
-                    // ou usar uma lógica específica de navegação para sair.
-                    // Por enquanto, vamos deixar como um TODO para a lógica específica.
-                    // navController.popBackStack(AppRoutes.TELA_DE_MENU, true) // Exemplo se houver uma tela anterior
-                    // ou System.exit(0) // Não recomendado para apps Android típicos
-                    // TODO: Implementar lógica de saída apropriada
+                    activity?.finish() // fecha a activity
                 },
-                backgroundColor = Color(0xFFE0E0E0), // Cor diferente para o botão Sair
+                backgroundColor = Color(0xFFE0E0E0),
                 textColor = Color(0xFF2C4EC7)
             )
+
         }
     }
 }

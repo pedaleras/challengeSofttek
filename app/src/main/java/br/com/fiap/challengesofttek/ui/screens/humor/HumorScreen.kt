@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -41,6 +43,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import br.com.fiap.challengesofttek.data.local.UserPreferences
 import br.com.fiap.challengesofttek.data.repository.HumorRepository
 import br.com.fiap.challengesofttek.data.remote.service.RetrofitClient
 
@@ -64,16 +67,27 @@ fun getHumorDescription(value: Int): String = when (value) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HumorScreen(
-    navController: NavController,
-    viewModel: HumorViewModel = viewModel(factory = object : ViewModelProvider.Factory {
-        override fun <T : ViewModel> create(modelClass: Class<T>): T {
-            val repository = HumorRepository(RetrofitClient.api)
-            return HumorViewModel(repository) as T
-        }
-    })
+    navController: NavController
 ) {
+    val context = LocalContext.current.applicationContext
+    val viewModel: HumorViewModel = viewModel(
+        factory = object : ViewModelProvider.Factory {
+            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                val repository = HumorRepository(RetrofitClient.api)
+                val userPreferences = UserPreferences(context)
+                return HumorViewModel(repository, userPreferences) as T
+            }
+        }
+    )
+
     var humorValue by remember { mutableStateOf(3) }
+    val humores by viewModel.humores.collectAsState()
     val resposta by viewModel.resposta.collectAsState()
+
+    // Carrega humores assim que entra na tela
+    LaunchedEffect(Unit) {
+        viewModel.carregarHumores()
+    }
 
     Scaffold(
         topBar = {
@@ -113,9 +127,7 @@ fun HumorScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = {
-                    viewModel.enviarHumor(humorValue)
-                },
+                onClick = { viewModel.enviarHumor(humorValue) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
@@ -125,7 +137,8 @@ fun HumorScreen(
             }
 
             Spacer(modifier = Modifier.height(24.dp))
-            resposta?.let { entry ->
+
+            humores.forEach { entry ->
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -144,6 +157,7 @@ fun HumorScreen(
         }
     }
 }
+
 
 
 @Preview(showBackground = true)

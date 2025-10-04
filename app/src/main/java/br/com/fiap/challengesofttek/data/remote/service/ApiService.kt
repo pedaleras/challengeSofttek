@@ -8,6 +8,7 @@ import br.com.fiap.challengesofttek.data.remote.dto.UsuarioAnonimoResponseDTO
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -16,6 +17,9 @@ interface ApiService {
 
     @GET("humores")
     suspend fun obterListaHumor(): List<HumorResponseDTO>
+
+    @GET("humores/{id}")
+    suspend fun obterHumoresPorUsuario(@Path("id") userId: String): List<HumorResponseDTO>
 
     @POST("humores")
     suspend fun enviarHumor(@Body humor: HumorRequestDTO): HumorResponseDTO
